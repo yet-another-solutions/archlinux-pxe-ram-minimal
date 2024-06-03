@@ -26,5 +26,7 @@ mksquashfs /mnt/main/new_root /mnt/main/squash_root/rootfs
 
 pushd /mnt/main/squash_root
 LC_ALL=C.UTF-8 find * -mindepth 1 -name "rootfs" -printf '%P\0' | LC_ALL=C.UTF-8 sort -z | LC_ALL=C.UTF-8 bsdtar --uid 0 --gid 0 --null -cnf - -T - | LC_ALL=C.UTF-8 bsdtar --null -cf - --format=newc @- | zstd >> /dist/rootfs.img
+popd
+
 cp /mnt/main/new_root/boot/vmlinuz-linux /dist/kernel.img
 cp /mnt/main/new_root/boot/initramfs-linux.img /dist/initramfs.img
