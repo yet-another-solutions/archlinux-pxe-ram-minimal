@@ -1,0 +1,27 @@
+name: Docker CI
+
+on: workflow_dispatch
+
+permissions:
+  contents: write
+
+jobs:
+  buid:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Checkout submodules init
+        run: git submodule init
+      - name: Checkout submodules update
+        run: git submodule update --remote
+      - name: Build Docker image
+        run: build.sh
+      - name: Copy distro
+        run: docker cp $(docker create localhost/coreos):/srv/target/. ./target
+      - name: Publish release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "target/*"
+          body: "Archlinux pxe images"
+          tag: "v1.0.0"
