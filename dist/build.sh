@@ -10,7 +10,7 @@ mount --mkdir /mnt/main.img /mnt/main/new_root
 #RUN echo 'root:1000:5000' > /etc/subuid
 #RUN echo 'root:1000:5000' > /etc/subgid
 
-pacstrap -K -N /mnt/main/new_root base linux
+pacstrap -K /mnt/main/new_root base linux
 
 arch-chroot /mnt/main/new_root /bin/bash -c "echo \"\" >> /usr/lib/initcpio/init_functions"
 arch-chroot /mnt/main/new_root /bin/bash -c "echo \"default_mount_handler() {\" >> /usr/lib/initcpio/init_functions"
