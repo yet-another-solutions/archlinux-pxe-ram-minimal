@@ -19,11 +19,9 @@ jobs:
         run: ls -la
       - name: Build Docker image
         run: ./build.sh
-      - name: Copy distro
-        run: docker cp $(docker create localhost/coreos):/srv/target/. ./target
       - name: Publish release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "target/*"
+          artifacts: "dist/*.img"
           body: "Archlinux pxe images"
           tag: "v1.0.0"
