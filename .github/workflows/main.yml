@@ -15,6 +15,8 @@ jobs:
         run: git submodule init
       - name: Checkout submodules update
         run: git submodule update --remote
+      - name: List dir content
+        run: ls -la
       - name: Build Docker image
         run: build.sh
       - name: Copy distro
