@@ -4,6 +4,7 @@ dd if=/dev/zero of=/mnt/main.img bs=1M count=3072
 mkfs.ext4 /mnt/main.img
 mount --mkdir /mnt/main.img /mnt/main/new_root
 
+
 #RUN mkdir -p /mnt/main/new_root
 
 #RUN echo 'root:1000:5000' > /etc/subuid
