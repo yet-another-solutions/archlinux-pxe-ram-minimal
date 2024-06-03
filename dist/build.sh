@@ -20,10 +20,11 @@ arch-chroot /mnt/main/new_root /bin/bash -c "echo \"}\" >> /usr/lib/initcpio/ini
 
 arch-chroot /mnt/main/new_root /bin/bash -c "mkinitcpio -P"
 
-#RUN arch-chroot /mnt/main/new_root /bin/bash -c "mkdir -p /mnt/main/squash_root"
+mkdir -p /mnt/main/squash_root
 
-#RUN arch-chroot /mnt/main/new_root /bin/bash -c  "mksquashfs /mnt/main/new_root /mnt/main/squash_root/rootfs"
+mksquashfs /mnt/main/new_root /mnt/main/squash_root/rootfs
 
-#RUN arch-chroot /mnt/main/new_root /bin/bash -c  "cd /mnt/main/squash_root && LC_ALL=C.UTF-8 find * -mindepth 1 -name \"rootfs\" -printf '%P\0' | LC_ALL=C.UTF-8 sort -z | LC_ALL=C.UTF-8 bsdtar --uid 0 --gid 0 --null -cnf - -T - | LC_ALL=C.UTF-8 bsdtar --null -cf - --format=newc @- | zstd >> /mnt/rootfs.img"
-#RUN arch-chroot /mnt/main/new_root /bin/bash -c  "cp /mnt/main/new_root/boot/vmlinux-linux /mnt/kernel.img"
-#RUN arch-chroot /mnt/main/new_root /bin/bash -c  "cp /mnt/main/new_root/boot/initramfs-linux /mnt/initramfs.img"
+pushd /mnt/main/squash_root
+LC_ALL=C.UTF-8 find * -mindepth 1 -name "rootfs" -printf '%P\0' | LC_ALL=C.UTF-8 sort -z | LC_ALL=C.UTF-8 bsdtar --uid 0 --gid 0 --null -cnf - -T - | LC_ALL=C.UTF-8 bsdtar --null -cf - --format=newc @- | zstd >> /dist/rootfs.img
+cp /mnt/main/new_root/boot/vmlinux-linux /dist/kernel.img
+cp /mnt/main/new_root/boot/initramfs-linux /dist/initramfs.img
