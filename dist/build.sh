@@ -10,13 +10,13 @@ arch-chroot /mnt/main/kernel_builder /bin/bash -c "echo \"\" >> /usr/lib/initcpi
 arch-chroot /mnt/main/kernel_builder /bin/bash -c "echo \"default_mount_handler() {\" >> /usr/lib/initcpio/init_functions"
 arch-chroot /mnt/main/kernel_builder /bin/bash -c "echo \"    mount /rootfs /new_root\" >> /usr/lib/initcpio/init_functions"
 arch-chroot /mnt/main/kernel_builder /bin/bash -c "echo \"}\" >> /usr/lib/initcpio/init_functions"
-arch-chroot /mnt/main/kernel_builder /bin/bash -c "sed \"/MODULES=.*/MODULES=(loop squashfs)/g\" /etc/mkinitcpio.conf"
+arch-chroot /mnt/main/kernel_builder /bin/bash -c "sed \"s/MODULES=.*/MODULES=(loop squashfs)/g\" /etc/mkinitcpio.conf"
 arch-chroot /mnt/main/new_root /bin/bash -c "mkinitcpio -P"
 
 cp /mnt/main/kernel_builder/boot/vmlinuz-linux /dist/kernel.img
 cp /mnt/main/kernel_builder/boot/initramfs-linux.img /dist/initramfs.img
 
-umount /mnt/main/kernel_builder
+umount -R /mnt/main/kernel_builder
 rm -rf /mnt/main/kernel_builder
 rm -rf /mnt/kernel_builder.img
 
