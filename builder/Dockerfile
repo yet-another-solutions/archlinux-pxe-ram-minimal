@@ -20,7 +20,7 @@ RUN mkdir /rootfs
 RUN tar xf /tmp/archlinux-bootstrap-x86_64.tar.zst --numeric-owner -C /rootfs
 
 FROM scratch as builder
-USER root
+#USER root
 COPY --from=bootstrap /rootfs/root.x86_64 /
 
 RUN pacman-key --init
