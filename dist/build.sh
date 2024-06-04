@@ -10,7 +10,7 @@ arch-chroot /mnt/main/kernel_builder /bin/bash -c "echo \"\" >> /usr/lib/initcpi
 arch-chroot /mnt/main/kernel_builder /bin/bash -c "echo \"default_mount_handler() {\" >> /usr/lib/initcpio/init_functions"
 arch-chroot /mnt/main/kernel_builder /bin/bash -c "echo \"    mount /rootfs /new_root\" >> /usr/lib/initcpio/init_functions"
 arch-chroot /mnt/main/kernel_builder /bin/bash -c "echo \"}\" >> /usr/lib/initcpio/init_functions"
-arch-chroot /mnt/main/kernel_builder /bin/bash -c "sed \"s/MODULES=.*/MODULES=(loop squashfs virtio virtio_net virtio_blk virtio_scsi virtio_pci virtio_pci_legacy_dev virtio_pci_modern_dev virtio_ring virtio_console virtion_balloon xen-blkfront xen-fbfront xenfs xen-netfront xen-kbdfront)/g\" /etc/mkinitcpio.conf"
+arch-chroot /mnt/main/kernel_builder /bin/bash -c "sed -i \"s/MODULES=.*/MODULES=(loop squashfs virtio virtio_net virtio_blk virtio_scsi virtio_pci virtio_pci_legacy_dev virtio_pci_modern_dev virtio_ring virtio_console virtion_balloon xen-blkfront xen-fbfront xenfs xen-netfront xen-kbdfront)/g\" /etc/mkinitcpio.conf"
 arch-chroot /mnt/main/new_root /bin/bash -c "mkinitcpio -P"
 
 cp /mnt/main/kernel_builder/boot/vmlinuz-linux /dist/kernel.img
