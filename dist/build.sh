@@ -1,41 +1,34 @@
 #!/bin/bash
 
-dd if=/dev/zero of=/mnt/main.img bs=1M count=3072
-mkfs.ext4 /mnt/main.img
-mount --mkdir /mnt/main.img /mnt/main/new_root
+dd if=/dev/zero of=/mnt/kernel_builder.img bs=1M count=3072
+mkfs.ext4 /mnt/kernel_builder.img
+mount --mkdir /mnt/kernel_builder.img /mnt/main/kernel_builder
 
+pacstrap -K /mnt/main/kernel_builder base linux squashfs-tools
 
-#RUN mkdir -p /mnt/main/new_root
-
-#RUN echo 'root:1000:5000' > /etc/subuid
-#RUN echo 'root:1000:5000' > /etc/subgid
-
-pacstrap -K /mnt/main/new_root base linux
-
-arch-chroot /mnt/main/new_root /bin/bash -c "echo \"\" >> /usr/lib/initcpio/init_functions"
-arch-chroot /mnt/main/new_root /bin/bash -c "echo \"default_mount_handler() {\" >> /usr/lib/initcpio/init_functions"
-arch-chroot /mnt/main/new_root /bin/bash -c "echo \"    mount /rootfs /new_root\" >> /usr/lib/initcpio/init_functions"
-# arch-chroot /mnt/main/new_root /bin/bash -c "echo \"    msg \\\"Doing nothing\\\"\" >> /usr/lib/initcpio/init_functions"
-arch-chroot /mnt/main/new_root /bin/bash -c "echo \"}\" >> /usr/lib/initcpio/init_functions"
-
+arch-chroot /mnt/main/kernel_builder /bin/bash -c "echo \"\" >> /usr/lib/initcpio/init_functions"
+arch-chroot /mnt/main/kernel_builder /bin/bash -c "echo \"default_mount_handler() {\" >> /usr/lib/initcpio/init_functions"
+arch-chroot /mnt/main/kernel_builder /bin/bash -c "echo \"    mount /rootfs /new_root\" >> /usr/lib/initcpio/init_functions"
+arch-chroot /mnt/main/kernel_builder /bin/bash -c "echo \"}\" >> /usr/lib/initcpio/init_functions"
+arch-chroot /mnt/main/kernel_builder /bin/bash -c "sed \"/MODULES=.*/MODULES=(loop squashfs)/g\" /etc/mkinitcpio.conf"
 arch-chroot /mnt/main/new_root /bin/bash -c "mkinitcpio -P"
 
+cp /mnt/main/kernel_builder/boot/vmlinuz-linux /dist/kernel.img
+cp /mnt/main/kernel_builder/boot/initramfs-linux.img /dist/initramfs.img
+
+umount /mnt/main/kernel_builder
+rm -rf /mnt/main/kernel_builder
+rm -rf /mnt/kernel_builder.img
+
+mkdir -p /mnt/main/rootfs
 mkdir -p /mnt/main/squash_root
 
-mksquashfs /mnt/main/new_root /mnt/main/squash_root/rootfs
+pacstrap -K /mnt/main/rootfs base
+
+mksquashfs /mnt/main/rootfs /mnt/main/squash_root/rootfs
 
 pushd /mnt/main/squash_root
-#ls
-#echo "looking"
-#LC_ALL=C.UTF-8 find * -mindepth 1 -name "rootfs" -printf '%P\0'
-#echo "looked"
-echo "debug find"
-LC_ALL=C.UTF-8 find * -printf '%P\0'
-echo "debug found"
 LC_ALL=C.UTF-8 find * -printf '%p\0' | LC_ALL=C.UTF-8 sort -z | LC_ALL=C.UTF-8 bsdtar --uid 0 --gid 0 --null -cnf - -T - | LC_ALL=C.UTF-8 bsdtar --null -cf - --format=newc @- | zstd > /dist/rootfs.img
 popd
-
-cp /mnt/main/new_root/boot/vmlinuz-linux /dist/kernel.img
-cp /mnt/main/new_root/boot/initramfs-linux.img /dist/initramfs.img
 
 chmod 666 /dist/*.img
