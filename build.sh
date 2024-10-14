@@ -21,6 +21,6 @@ xorriso -as mkisofs \
   -c isolinux/boot.cat \
   -boot-load-size 4 -boot-info-table -no-emul-boot \
   -eltorito-alt-boot \
-  -e EFI/BOOT/BOOTX64.EFI
+  -e EFI/BOOT/BOOTX64.EFI \
   -no-emul-boot -isohybrid-gpt-basdat -isohybrid-apm-hfsplus \
   dist_iso
