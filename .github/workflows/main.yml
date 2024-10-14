@@ -9,6 +9,8 @@ jobs:
   buid:
     runs-on: ubuntu-latest
     steps:
+      - name: Install additional packages
+        run: sudo apt-get install -y xorriso syslinux isolinux grub2-common grub-pc-bin grub-efi-ia32-bin grub-efi-amd64-bin
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Checkout submodules init
