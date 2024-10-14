@@ -1,4 +1,5 @@
 #!/bin/bash
+apt-get install xorriso -y
 pushd builder
 ./builder.sh
 popd
