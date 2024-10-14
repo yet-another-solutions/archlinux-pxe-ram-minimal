@@ -22,6 +22,6 @@ jobs:
       - name: Publish release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "dist/*.img"
+          artifacts: "dist/*.img,dist/iso.iso"
           body: "Archlinux pxe images"
-          tag: "v1.0.0"
+          tag: "v2.0.0"
