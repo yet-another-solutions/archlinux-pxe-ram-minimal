@@ -1,5 +1,7 @@
 #!/bin/bash
 apt-get install xorriso -y
+apt-get install syslinux -y
+apt-get install isolinux -y
 pushd builder
 ./builder.sh
 popd
